@@ -7,7 +7,6 @@
 	define('DB_PASSWORD', 'root');
 	
 
-
 class Conexao {
 	public $db;
 	public $conn;
@@ -26,7 +25,7 @@ class Conexao {
     		$this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$this->conn->exec("set names utf8");
 		} catch(PDOException $e) {
-    		echo "erro $e";
+    		print "erro $e";
 		}		
 	}
 	
@@ -40,47 +39,83 @@ class Conexao {
 	}
 	
 	
-    public function insert($dados) {
-    	$tabela = $dados['tabela'];
-		unset($dados['tabela']);
-        foreach ($dados as $key => $value) {
-            $keys[] = $key;
-            $insertvalues[] = '\'' . $value . '\'';
-        }
-        $keys = implode(',', $keys);
-        $insertvalues = implode(',', $insertvalues);
-        $sql = "INSERT INTO $tabela ($keys) VALUES ($insertvalues)";
-		return $this->conn->exec($sql);
-        
+	// TODO arrumar bug inserção registro nula
+	/**
+	 * Atenção: Essa função modifica o id do objeto passado para o valor do objeto inserido no banco
+	 */
+    public function insert($objetoDao) {
+    	try{
+	    	$dados = $objetoDao->arrayPropriedades();
+	    	$tabela = $dados['tabela'];
+			unset($dados['tabela']);
+	        foreach ($dados as $key => $value) {
+	            $keys[] = $key;
+	            $insertvalues[] = '\'' . $value . '\'';
+	        }
+	        $keys = implode(',', $keys);
+	        $insertvalues = implode(',', $insertvalues);
+	        $sql = "INSERT INTO $tabela ($keys) VALUES ($insertvalues)";
+			$ret = $this->conn->exec($sql);
+			$objetoDao->id = $this->conn->lastInsertId();
+			return $ret;
+		 }catch(Exception $e){
+		 	print $e;
+		 	return -1;		 	
+		 }
     }
 	
 	
-    public function update($dados, $colunaPrimay, $valor) {
-    	$tabela = $dados['tabela'];
-		unset($dados['tabela']);
-        foreach ($dados as $key => $value) {
-            $sets[] = $key . '=\'' . $value . '\'';
-        }
-        $sets = implode(',', $sets);
-        $sql = "UPDATE $tabela SET $sets WHERE $colunaPrimay = '$valor'";
-        return $this->conn->exec($sql); 
+    public function update($objetoDao, $where='') {
+    	try{
+	    	$dados = $objetoDao->arrayPropriedades();
+	    	$tabela = $dados['tabela'];
+			$sql = '';
+			unset($dados['tabela']);
+	        foreach ($dados as $key => $value) {
+	            $sets[] = $key . '=\'' . $value . '\'';
+	        }
+	        $sets = implode(',', $sets);
+			if($where != ''){
+				$sql = "UPDATE $tabela SET $sets WHERE $where";
+			}else
+				$id = $dados["id$tabela"];
+				$sql = "UPDATE $tabela SET $sets WHERE id$tabela = $id";  
+	        return $this->conn->exec($sql); 
+		}catch(Exception $e){
+			print $e;
+			return -1;
+		}
     }
+	
+	
+	public function delete($objetoDao){
+		try{
+			 $dados = $objetoDao->arrayPropriedades();
+			 $tabela = $dados['tabela'];
+			 $id = $dados["id$tabela"];
+			 $sql = "DELETE FROM $tabela WHERE id$tabela=$id";
+		     return $this->conn->exec($sql);
+		}catch(Exception $e){
+			print $e;
+			return -1;
+		}
+	}
 	
 	   
     public function select($tabela, $colunas = "*", $where = " ") {
-        $sql = "SELECT $colunas FROM $tabela WHERE $where ;";
-        $stmt = $this->conn->prepare($sql); 
-        $stmt->execute();
-    	$stmt->setFetchMode(PDO::FETCH_ASSOC);
-		return $stmt;
+    	try{
+	        $sql = "SELECT $colunas FROM $tabela WHERE $where ;";
+	        $stmt = $this->conn->prepare($sql); 
+	        $stmt->execute();
+	    	$stmt->setFetchMode(PDO::FETCH_ASSOC);
+			return $stmt;
+		}catch(Exception $e){
+			print $e;
+			return null;
+		}
     }
 	
-	public function delete($dados){
-		 $tabela = $dados['tabela'];
-		 $id = $dados["id$tabela"];
-		 $sql = "DELETE FROM $tabela WHERE id$tabela=$id";
-	     return $this->conn->exec($sql);
-	}
+	
 	
 	
 }

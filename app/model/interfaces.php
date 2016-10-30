@@ -1,5 +1,5 @@
 <?php 
-	interface DaoObject{
+	interface ObjetoDao{
 		
 		/**
 		 * retorna um array com os campos da tabela, atenção pois o primeiro

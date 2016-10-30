@@ -5,13 +5,14 @@
 	 */
 	 
 	require_once 'app/model/interfaces.php';
-	class Campeonato implements DaoObject{
-	    public $id;
-		public $descricao;
+	class Campeonato implements ObjetoDao{
+	    public $tabela = 'campeonato';
+		var $id, $descricao;
 		
-		function __construct($id=0, $descricao='') {
+		function __construct($id=0, $descricao='', $tabela = 'campeonato') {
 			 $this->descricao = $descricao;
 			 $this->id = $id;
+			 $this->tabela = $tabela;
 		}
 				
 		/**
@@ -19,7 +20,7 @@
 		 * item é sempre o nome da tabela
 		 */
 		public function arrayPropriedades()	{
-			return ['tabela'=> 'campeonato', 'idcampeonato'=> $this->id, 'descricao'=>$this->descricao];
+			return ['tabela'=> $this->tabela, 'idcampeonato'=> $this->id, 'descricao'=>$this->descricao];
 		}
 		
 		/**

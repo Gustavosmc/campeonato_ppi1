@@ -3,7 +3,7 @@
 	require_once 'app/model/campeonato.php';
 	require_once '../db/conexao.php';
 	
-	$cam = new Campeonato(0,"Brasilao");
+	$cam = new Campeonato(0,"Carioca");
 	
 	$con = new Conexao(DB_SERVER, DB_NAME, DB_USERNAME, DB_PASSWORD);
 	if($con->conn){
@@ -12,13 +12,13 @@
 		echo "falhou\n";
 	
 	// Teste de insert
-	echo 'inseriu '. $con->insert($cam->arrayPropriedades());
+	echo 'inseriu '. $con->insert($cam);
 	echo "\n";
 	
 	
 	// Teste de update
-	$cam = new Campeonato(1, "Futsal");
-	echo 'atualizou '. $con->update($cam->arrayPropriedades(), "idcampeonato", 1 );
+	$cam->descricao = "Campeonato Carioca";
+	echo 'atualizou '. $con->update($cam);
 	echo "\n";
 	
 	// Teste de select
@@ -34,9 +34,7 @@
 	// Teste de delete
 	$del = new Campeonato();
 	$del->id = 4;
-	echo 'deletou '. $con->delete($del->arrayPropriedades());
-	
-	
+	echo 'deletou '. $con->delete($del);
 	
 	
 	$con->desconectar();
