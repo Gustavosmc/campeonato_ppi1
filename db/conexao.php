@@ -1,7 +1,7 @@
 <?php 
 	
 	//Variáveis de acesso Db
-	define('DB_SERVER', 'localhost');
+	define('DB_SERVER', '0.0.0.0');
 	define('DB_NAME', 'futebol');
 	define('DB_USERNAME', 'root');
 	define('DB_PASSWORD', 'root');
@@ -10,14 +10,18 @@
 class Conexao {
 	public $db;
 	public $conn;
-    public function __construct($server, $database, $username, $password){
-    	  $this->iniciarConexao($server, $username, $password, $database);
+	var $server, $username, $password, $database;
+    public function __construct($server=null, $database=null, $username=null, $password=null){
+    	  $this->server = $server;
+		  $this->username = $username;
+		  $this->password = $password;
+		  $this->database = $database;
     }
 
 	/**
 	 * inicia uma conexão usando os dados passados no parâmetro
 	 */
-    function iniciarConexao($servidor, $usuario, $senha, $banco){
+    private function iniciarConexao($servidor, $usuario, $senha, $banco){
 		$conn = null;
 		$dsn = 'mysql:host='.$servidor.';dbname='.$banco;
 		try {
@@ -31,8 +35,16 @@ class Conexao {
 	
 	public function iniciarConexaoDefault(){
 		$this->iniciarConexao(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+		$this->database = DB_NAME;
+		$this->server = DB_SERVER;
+		$this->password = DB_PASSWORD;
+		$this->username = DB_USERNAME;
 	}
 	
+	
+	public function conectar(){
+		$this->iniciarConexao($this->server, $this->username, $this->password, $this->database);
+	}
 	
 	public function desconectar(){
 		$this->conn = null;
