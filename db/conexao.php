@@ -71,7 +71,6 @@ class Conexao {
 			$objetoDao->id = $this->conn->lastInsertId();
 			return $ret;
 		 }catch(Exception $e){
-		 	print $e;
 		 	return -1;		 	
 		 }
     }
@@ -94,7 +93,6 @@ class Conexao {
 				$sql = "UPDATE $tabela SET $sets WHERE id$tabela = $id";  
 	        return $this->conn->exec($sql); 
 		}catch(Exception $e){
-			print $e;
 			return -1;
 		}
     }
@@ -108,7 +106,6 @@ class Conexao {
 			 $sql = "DELETE FROM $tabela WHERE id$tabela=$id";
 		     return $this->conn->exec($sql);
 		}catch(Exception $e){
-			print $e;
 			return -1;
 		}
 	}
@@ -122,7 +119,6 @@ class Conexao {
 	    	$stmt->setFetchMode(PDO::FETCH_ASSOC);
 			return $stmt;
 		}catch(Exception $e){
-			print $e;
 			return null;
 		}
     }

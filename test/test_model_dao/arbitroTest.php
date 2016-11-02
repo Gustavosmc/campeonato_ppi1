@@ -1,7 +1,7 @@
 <?php 
 
-	require_once $_SERVER["DOCUMENT_ROOT"] .'app/model/arbitro.php';
-	require_once $_SERVER["DOCUMENT_ROOT"] .'db/conexao.php';
+	require_once $_SERVER["DOCUMENT_ROOT"] .'/campeonato/app/model/arbitro.php';
+	require_once $_SERVER["DOCUMENT_ROOT"] .'/campeonato/db/conexao.php';
 	
 	$con = new Conexao(DB_SERVER, DB_NAME, DB_USERNAME, DB_PASSWORD);
 	$con->conectar();

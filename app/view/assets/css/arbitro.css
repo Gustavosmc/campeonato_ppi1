@@ -16,7 +16,8 @@ table {
     border-spacing: 5px;
 }
 
-div.tabela{
-	 margin: auto auto;
-  	 width: 100%;
+.acao{
+	vertical-align: top;
 }
+
+
