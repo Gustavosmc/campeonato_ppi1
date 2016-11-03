@@ -1,6 +1,6 @@
 <?php include $_SERVER["DOCUMENT_ROOT"].'/campeonato/app/view/layout/menu.php'; ?>
 
-<div class="formulario">
+<div class="corpo" id="formularioArbitro">
 	<h2>Cadastro de Arbitro</h2>
 	 <?php 
 		   include_once $_SERVER["DOCUMENT_ROOT"] .'/campeonato/app/controller/arbitro_controller.php';
@@ -8,21 +8,28 @@
 			$arbitroCtr->novo();
 			$cidades = $arbitroCtr->todasCidades();
 	 ?>
-	<form action="salvar.php" method="post">
-		Nome: <input type="text" name="nome"><br>
-		Idade: <input type="number" name="idade"><br>
-		RG:   <input type="number" name="rg"><br>
+	 <div id="novo">
+	   <form action="salvar.php" method="post" style="display: inline;">
+		Nome:<br>
+		<input type="text" name="nome" style="display: inline;"><br>
+		Idade:<br>
+		<input type="number" name="idade" style="display: inline;"><br>
+		RG:<br>
+		<input type="number" name="rg" style="display: inline;"><br>
+		Cidade:<br>
 		<select name='idcidade'>	  
-		   <?php 
-		   	
+		   <?php 		   	
 			 foreach($cidades as $c){
 			 	 echo "<option value='$c->id'>$c->nome</option>";
-			 }
-		    	
-		    ?>  
-		</select>
-	<input type="submit" value="Salvar">
-	</form>
+			 } ?>  
+		</select></br></br>
+		<input type="submit" value="Salvar" >
+		</form>
+		<form action='index.php' method='get' style="display: inline;">
+			<input type='submit' value='Voltar' />
+		</form>
+	 </div>
+	
 	
 </div>
 

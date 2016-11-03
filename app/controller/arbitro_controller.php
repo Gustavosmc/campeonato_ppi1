@@ -28,10 +28,10 @@
 			return $cidades;		
 		}
 
-		public function pegarCidade(){
+		public function pegarCidade($id=0){
 			$this->conexao->conectar();
 			$cidade = new Cidade();
-			$fk = $this->arbitro->fkcidade;
+			$fk = ($id) ? $id : $this->arbitro->fkcidade;
 			$cidade = $cidade->fabricarObjetos($this->conexao->select('cidade', '*', "idcidade = $fk limit 1"));
 			$this->conexao->desconectar();	
 			return $cidade[0];
@@ -40,8 +40,13 @@
 		
 		
 		public function index(){
+			$busca =  "idarbitro > 0 ORDER BY nome";
+			if(isset($_POST['busca'])){
+				$valor = test_input($_POST['busca']);
+				$busca = "nome LIKE '$valor%' ORDER BY nome";			
+			}
 			$this->conexao->conectar();
-			$ret = $this->arbitro->fabricarObjetos($this->conexao->select('arbitro', '*', "idarbitro > 0"));
+			$ret = $this->arbitro->fabricarObjetos($this->conexao->select('arbitro', '*', $busca));
 			$this->conexao->desconectar();
 			if(count($ret) == 0){
 				return null;

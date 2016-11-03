@@ -1,5 +1,7 @@
 <?php include $_SERVER["DOCUMENT_ROOT"].'/campeonato/app/view/layout/menu.php'; ?>
 
+<div class="corpo" id="salvarArbitro">
+
 <?php 
 	include_once $_SERVER["DOCUMENT_ROOT"] .'/campeonato/app/controller/arbitro_controller.php';
 	$arbitroCtr = new ArbitroController();
@@ -15,4 +17,7 @@
 	}
 
  ?>
+</div>
+
+
  <?php include $_SERVER["DOCUMENT_ROOT"].'/campeonato/app/view/layout/footer.php'; ?>
