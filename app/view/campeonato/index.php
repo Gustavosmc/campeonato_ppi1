@@ -1,12 +1,12 @@
 
 <?php include $_SERVER["DOCUMENT_ROOT"].'/campeonato/app/view/layout/menu.php'; ?>
 <br>
-<div class="corpo" id='indexArbitro' >
+<div class="corpo" id='indexCampeonato' >
 	
-	<div  id='menuArbitro' >
+	<div  id='menuCampeonato' >
 		<div id="name">
-		  <span class="flaticon-whistle"></span>
-		  <i>Árbitros</i>
+		  <span class="flaticon-trophy-football-cup"></span>
+		  <i>Campeonatos</i>
 		</div>
 		<form action='index.php' method='post' style="display: inline;">
 			<input type='text' name="busca" placeholder="Buscar nome" />
@@ -15,35 +15,28 @@
 		
 		
 		<form action='novo.php' method='get' style="display: inline;">
-			<input type='submit' value='Novo Arbitro'>
+			<input type='submit' value='Novo Campeonato'>
 		</form>
 		
 	</div>
 
 <?php 	
-    include_once $_SERVER["DOCUMENT_ROOT"] .'/campeonato/app/controller/arbitro_controller.php';
-	$arbitroCtr = new ArbitroController();
-	$arbitros = $arbitroCtr->index();
-	if(!$arbitros){
-		echo "Nem um arbitro encontrado";
+    include_once $_SERVER["DOCUMENT_ROOT"] .'/campeonato/app/controller/campeonato_controller.php';
+	$campeonatoCtr = new CampeonatoController();
+	$campeonatos = $campeonatoCtr->index();
+	if(!$campeonatos){
+		echo "Nem um campeonato encontrado";
 	}else{
 		echo "<table>
 			  <tr>
-			    <th>Nome</th>
-			    <th>Idade</th>
-			    <th>RG</th>
-			    <th>Cidade</th>			    
+			    <th>Descrição</th>		    
 			    <th>Acões</th>
 			  </tr>";
 	
-			foreach ($arbitros as $value) {
-				$id = $value->id;
-				$cidade = $arbitroCtr->pegarCidade($value->fkcidade)->nome;				
+			foreach ($campeonatos as $value) {
+				$id = $value->id;			
 				echo "<tr>
-					    <td>$value->nome</td>
-					    <td>$value->idade</td> 
-					    <td>$value->rg</td>
-					    <td>$cidade</td>
+					    <td>$value->descricao</td>
 					    <td>
 						  <form action='mostrar.php' method='get'>
 							<input type='hidden' name='num' value='$id'><br>

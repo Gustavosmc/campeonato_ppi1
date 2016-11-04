@@ -4,7 +4,7 @@
 	 * 
 	 */
 	 
-	require_once 'app/model/interfaces.php';
+    include_once $_SERVER["DOCUMENT_ROOT"] .'/campeonato/app/model/interfaces.php';
 	class Campeonato implements ObjetoDao{
 	    public $tabela = 'campeonato';
 		var $id, $descricao;

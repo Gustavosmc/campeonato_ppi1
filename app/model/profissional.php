@@ -4,7 +4,7 @@
 	 * 
 	 */
 	 
-	require_once 'app/model/interfaces.php';
+	require_once $_SERVER["DOCUMENT_ROOT"] .'/campeonato/app/model/interfaces.php';
 	class Profissional implements ObjetoDao{
 		public $tabela = 'profissional';
 	  	var  $id, $nome, $idade, $rg, $posicao, $salario, $habilidade, $fktime;

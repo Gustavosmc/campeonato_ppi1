@@ -4,7 +4,7 @@
 	 * 
 	 */
 	 
-	require_once 'app/model/interfaces.php';
+	require_once $_SERVER["DOCUMENT_ROOT"] .'/campeonato/app/model/interfaces.php';
 	class Time implements ObjetoDao{
 		public $tabela = 'time';
 	  	var  $id, $nome, $sigla, $cor, $patrimonio, $ano, $fkestadio, $fkcidade;

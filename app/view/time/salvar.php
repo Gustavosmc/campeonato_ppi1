@@ -1,0 +1,23 @@
+<?php include $_SERVER["DOCUMENT_ROOT"].'/campeonato/app/view/layout/menu.php'; ?>
+
+<div class="corpo" id="salvarTime">
+
+<?php 
+	include_once $_SERVER["DOCUMENT_ROOT"] .'/campeonato/app/controller/time_controller.php';
+	$timeCtr = new TimeController();
+	$ret = $timeCtr->salvar($_POST);
+	$id = $timeCtr->time->id;
+	if($ret == 1){
+		header("Location: mostrar.php?num=$id&novo");
+		exit;
+	}elseif($ret == -1){
+		echo "<p>Ocorreu um erro ao tentar salvar!</p>";
+	}else{
+		echo "<p>Não foi possivel salvar!</p>";
+	}
+
+ ?>
+</div>
+
+
+ <?php include $_SERVER["DOCUMENT_ROOT"].'/campeonato/app/view/layout/footer.php'; ?>

@@ -1,7 +1,7 @@
 <?php 
 
-	include_once $_SERVER["DOCUMENT_ROOT"] .'/campeonato/app/model/arbitro.php';
-	include_once $_SERVER["DOCUMENT_ROOT"] .'/campeonato/app/model/cidade.php';
+	include_once $_SERVER["DOCUMENT_ROOT"] .'/campeonato/app/model/campeonato.php';
+	include_once $_SERVER["DOCUMENT_ROOT"] .'/campeonato/app/model/grupo.php';
 	include_once $_SERVER["DOCUMENT_ROOT"] .'/campeonato/db/conexao.php';
 	include_once $_SERVER["DOCUMENT_ROOT"] .'/campeonato/app/controller/base_controller.php';
 	include 'helper.php';
@@ -9,44 +9,47 @@
 	/**
 	 * 
 	 */
-	class ArbitroController extends BaseController{
+	class campeonatoController extends BaseController{
 		private $conexao = null;
-		public $arbitro = null;
-		public $cidade = null;
+		public $campeonato = null;
+		public $grupo = null;
+		
 		
 		
 		function __construct() {
 			$this->conexao = new Conexao(DB_SERVER, DB_NAME, DB_USERNAME, DB_PASSWORD);
-			$this->arbitro = new Arbitro();
+			$this->campeonato = new Campeonato();
 		}
 		
-		public function todasCidades(){
+		public function todosGrupos(){
+			$this->filtrar();
+			$idcamp = $this->campeonato->id;
 			$this->conexao->conectar();
-			$cidade = new Cidade();
-			$cidades = $cidade->fabricarObjetos($this->conexao->select('cidade', '*', 'idcidade > 0'));
+			$this->grupo = new Grupo();
+			$grupos = $this->grupo->fabricarObjetos($this->conexao->select('grupo', '*', "fkcampeonato = $idcamp"));
 			$this->conexao->desconectar();
-			return $cidades;		
+			return $grupos;		
 		}
 
-		public function pegarCidade($id=0){
-			$this->conexao->conectar();
-			$cidade = new Cidade();
-			$fk = ($id) ? $id : $this->arbitro->fkcidade;
-			$cidade = $cidade->fabricarObjetos($this->conexao->select('cidade', '*', "idcidade = $fk limit 1"));
-			$this->conexao->desconectar();	
-			return $cidade[0];
-		}
+		// public function pegarCidade($id=0){
+			// $this->conexao->conectar();
+			// $cidade = new Cidade();
+			// $fk = ($id) ? $id : $this->campeonato->fkcidade;
+			// $cidade = $cidade->fabricarObjetos($this->conexao->select('cidade', '*', "idcidade = $fk limit 1"));
+			// $this->conexao->desconectar();	
+			// return $cidade[0];
+		// }
 		
 		
 		
 		public function index(){
-			$busca =  "idarbitro > 0 ORDER BY nome";
+			$busca =  "idcampeonato > 0 ORDER BY descricao";
 			if(isset($_POST['busca'])){
 				$valor = test_input($_POST['busca']);
-				$busca = "nome LIKE '$valor%' ORDER BY nome";			
+				$busca = "descricao LIKE '$valor%' ORDER BY descricao";			
 			}
 			$this->conexao->conectar();
-			$ret = $this->arbitro->fabricarObjetos($this->conexao->select('arbitro', '*', $busca));
+			$ret = $this->campeonato->fabricarObjetos($this->conexao->select('campeonato', '*', $busca));
 			$this->conexao->desconectar();
 			if(count($ret) == 0){
 				return null;
@@ -56,53 +59,45 @@
 		}
 		
 		public function novo(){
-			$this->arbitro = new Arbitro();
+			$this->campeonato = new Campeonato();
 		}
 		
 		public function mostrar(){
 			$this->filtrar();
-			return $this->arbitro;
+			return $this->campeonato;
 		}
 		
 		public function salvar($post){
-				$nome = $post['nome'];
-				$idade = $post['idade'];
-				$rg = $post['rg'];
-				$idcidade = $post['idcidade'];
-				$arbitro = new Arbitro(0, test_input($nome), test_input($idade), test_input($rg), test_input($idcidade));
+				$descricao = $post['descricao'];
+				$campeonato = new Campeonato(0, test_input($descricao));
 				$this->conexao->conectar();
-				$ret = $this->conexao->insert($arbitro);
+				$ret = $this->conexao->insert($campeonato);
 				$this->conexao->desconectar();
-				$this->arbitro = $arbitro;
+				$this->campeonato = $campeonato;
 				return $ret;
 		}
 		
 		public function editar(){			
 			 	$this->filtrar();
-				return $this->arbitro;
+				return $this->campeonato;
 		}
 		
 		public function atualizar($post){
 			    $id = $post['num'];
-				$nome = $post['nome'];
-				$idade = $post['idade'];
-				$rg = $post['rg'];
-				$idcidade = $post['idcidade'];
-				$this->arbitro = new Arbitro(test_input($id), test_input($nome), test_input($idade), test_input($rg), 
-				test_input($idcidade));	   
+				$descricao = $post['descricao'];
+				$this->campeonato = new Campeonato(test_input($id), test_input($descrica));	   
 				$this->conexao->conectar();
-				$status = $this->conexao->update($this->arbitro);
+				$ret = $this->conexao->update($this->campeonato);
 				$this->conexao->desconectar();
-				return $status;
-			
+				return $ret;
 		}
 		
 		public function apagar($post){
 			$id = $post['num'];
 			$id = test_input($id);
-			$this->arbitro->id = $id;
+			$this->campeonato->id = $id;
 			$this->conexao->conectar();
-			$ret = $this->conexao->delete($this->arbitro);
+			$ret = $this->conexao->delete($this->campeonato);
 			$this->conexao->desconectar();
 			return $ret;
 		}
@@ -110,17 +105,17 @@
 		
 		// TODO arrumar venerabilidade SQL-Injection
 		public function filtrar(){
-			$id = $this->arbitro->id;
+			$id = $this->campeonato->id;
 			if(isset($_GET['num'])){
 				$id = test_input($_GET['num']);
 			}		
 			$this->conexao->conectar();
-			$ret = $this->arbitro->fabricarObjetos($this->conexao->select('arbitro', '*', "idarbitro = $id limit 1"));
+			$ret = $this->campeonato->fabricarObjetos($this->conexao->select('campeonato', '*', "idcampeonato = $id limit 1"));
 			$this->conexao->desconectar();
 			if(count($ret) == 0){
-				$this->arbitro = null;
+				$this->campeonato = null;
 			}else
-				$this->arbitro = $ret[0];
+				$this->campeonato = $ret[0];
 		}
 		
 		

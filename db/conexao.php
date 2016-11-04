@@ -93,7 +93,9 @@ class Conexao {
 				$sql = "UPDATE $tabela SET $sets WHERE id$tabela = $id";  
 	        return $this->conn->exec($sql); 
 		}catch(Exception $e){
+			print $e;
 			return -1;
+			
 		}
     }
 	
